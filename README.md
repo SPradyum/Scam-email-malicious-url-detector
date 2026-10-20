@@ -1,194 +1,120 @@
-# Scam Email and Malicious URL Detection Using AI
+# ScamShield — Scam Email and Malicious URL Detector
 
-An AI-assisted cybersecurity web application developed as a college project for the **Machine Learning** subject. The application analyzes suspicious emails, text messages, and website URLs to identify potential scam and phishing indicators.
+An educational prototype based on the supplied report: Python, FastAPI, basic input/URL validation, and Google Gemini AI. It provides an advisory explanation, not a guaranteed verdict or a locally trained classifier.
 
-## Project Overview
+## 1. Requirements
 
-Scam emails and malicious URLs are commonly used in phishing attacks to trick users into sharing sensitive information, clicking suspicious links, or making fraudulent payments.
+- Python 3.11+ recommended
+- VS Code or another editor
+- Internet access for Gemini API calls
+- A Gemini API key with access to the configured model
 
-This project provides a simple web interface where users can submit an email/message or a URL and receive an AI-generated risk assessment with explanations of potential warning signs.
+## 2. Open the project
 
-**Note:** This is an educational prototype. It uses a hosted generative AI service and basic URL checks; it is not a separately trained machine-learning classifier.
+Extract the ZIP. In VS Code, choose **File → Open Folder** and select `scam_email_url_detector`.
 
-## Features
+Open the VS Code terminal (**Terminal → New Terminal**).
 
-- **Email and Message Analysis:** Reviews submitted text for potential scam and phishing indicators.
-- **URL Analysis:** Parses URLs and checks basic characteristics, including HTTP usage, hostname structure, and suspicious-looking path terms.
-- **AI-Assisted Assessment:** Uses the Google Gemini API to explain potential warning signs and suggest safe next steps.
-- **Interactive Web Interface:** Provides separate input modes for email/message and website URL analysis.
-- **Input Validation:** Checks the input type and limits the length of submitted content.
-- **Error Handling:** Displays useful messages when the AI service cannot complete a request.
-- **API Documentation:** Provides interactive API documentation through FastAPI.
+## 3. Create a virtual environment
 
-## Technologies Used
+### Windows PowerShell
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+If PowerShell blocks activation, use Command Prompt:
+```bat
+.venv\Scripts\activate.bat
+```
 
-| Technology | Purpose |
-|---|---|
-| Python | Backend application logic |
-| FastAPI | Backend API and HTTP endpoints |
-| Google Gemini API | AI-assisted text analysis |
-| HTML | Web page structure |
-| CSS | Interface styling |
-| JavaScript | Frontend interaction and API requests |
-| Pydantic | Input validation |
-| Uvicorn | Local development server |
-| python-dotenv | Loading environment variables |
+### macOS / Linux
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-## System Architecture
+## 4. Install packages
 
-1. **User Input:** The user enters an email/message or website URL.
-2. **Frontend:** HTML, CSS, and JavaScript provide the interface and send the request.
-3. **Backend:** FastAPI validates the request and processes the input.
-4. **URL Checks:** For URL input, basic parsing and format indicators are evaluated locally.
-5. **AI Assessment:** The backend sends the submitted content and analysis instructions to Google Gemini.
-6. **Result:** The application displays the AI assessment, potential warning signs, and recommended next steps.
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-## Project Structure
+## 5. Configure Gemini
+
+1. Create an API key at https://aistudio.google.com/apikey.
+2. Copy `.env.example` and rename the copy to `.env`.
+3. Open `.env` and replace `put_your_key_here` with your key.
+4. Do not share `.env`, commit it to Git, or put the key in browser JavaScript.
+
+If the model name is unavailable for your API account, set `GEMINI_MODEL` in `.env` to a currently supported text-generation model from the Google AI documentation.
+
+## 6. Start the app
+
+```bash
+uvicorn main:app --reload
+```
+
+Open **http://127.0.0.1:8000** in your browser. Keep the terminal running while using the site.
+
+API documentation is available at **http://127.0.0.1:8000/docs**.
+Health endpoint: **http://127.0.0.1:8000/api/health**.
+
+## 7. Test it
+
+Try a harmless sample:
+> Hi team, our meeting is scheduled for 3 PM. Please review the agenda before the meeting.
+
+Try a suspicious-pattern sample:
+> Your account will be suspended today. Verify your password immediately to avoid losing access.
+
+For URL checks, use a non-sensitive example such as:
+`http://example.com/login`
+
+These are illustrative test inputs, not claims about the real-world safety of a domain. The application does not open or fetch the submitted URL.
+
+## 8. Run the basic tests
+
+Install the test dependency:
+```bash
+pip install pytest httpx
+```
+Then run:
+```bash
+pytest -q
+```
+These tests cover API health, input validation, and local URL parsing. They do not measure AI detection accuracy.
+
+## Project structure
 
 ```text
 scam_email_url_detector/
-├── main.py
-├── requirements.txt
-├── .env.example
-├── .gitignore
-├── README.md
+├── main.py                 # FastAPI backend and Gemini integration
+├── requirements.txt        # Python dependencies
+├── .env.example            # Example configuration; copy to .env
+├── .gitignore              # Excludes secrets and virtual environment
 ├── static/
-│   ├── index.html
-│   ├── style.css
-│   └── app.js
+│   ├── index.html          # Browser interface
+│   ├── style.css           # Interface styling
+│   └── app.js              # Form submission and result rendering
 └── tests/
-    └── test_validation.py
+    └── test_validation.py  # Basic automated tests
 ```
 
-## Prerequisites
+## Troubleshooting
 
-Before running the application, install:
+- **`python` or `py` not found:** install Python and enable “Add Python to PATH”, then reopen the terminal.
+- **Activation blocked:** use Command Prompt activation shown above, or configure your shell's policy according to your institution's IT guidance.
+- **`ModuleNotFoundError`:** activate `.venv` and run `pip install -r requirements.txt`.
+- **503 / key not configured:** confirm `.env` exists in the project root and uses `GEMINI_API_KEY=...`; restart the server after editing it.
+- **502 AI service error:** check network access, API key validity, model access, quota, and the terminal message.
+- **Port already in use:** run `uvicorn main:app --reload --port 8001` and open `http://127.0.0.1:8001`.
 
-- Python 3.12 recommended
-- Visual Studio Code or another code editor
-- Internet connectivity
-- A Google Gemini API key with access to a supported model
+## Safety and limitations
 
-Create an API key using [Google AI Studio](https://aistudio.google.com/apikey).
-
-## Installation and Setup
-
-### 1. Clone the repository
-
-Replace `YOUR_GITHUB_USERNAME` with your GitHub username.
-
-```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/scam-email-malicious-url-detector.git
-cd scam-email-malicious-url-detector
-```
-
-Alternatively, download the repository as a ZIP file and extract it.
-
-### 2. Create a virtual environment
-
-**Windows PowerShell or Command Prompt:**
-
-```powershell
-py -3.12 -m venv .venv
-```
-
-If PowerShell blocks activation, you can use the environment's Python executable directly without activating it.
-
-### 3. Install dependencies
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
-
-### 4. Configure the Gemini API
-
-Copy `.env.example` to a new file named `.env` in the project root.
-
-Update `.env` with your own API key and a model available to your account:
-
-```dotenv
-GEMINI_API_KEY=your_actual_api_key_here
-GEMINI_MODEL=your_supported_model_name
-```
-
-Use the model name recommended by the current Google Gemini API documentation and supported by your API account.
-
-**Security:** Never upload `.env` or expose your API key in source code, screenshots, or public repositories.
-
-### 5. Run the application
-
-On Windows:
-
-```powershell
-.\.venv\Scripts\python.exe -m uvicorn main:app --reload
-```
-
-Open the application in your browser:
-
-- **Web application:** http://127.0.0.1:8000
-- **Interactive API documentation:** http://127.0.0.1:8000/docs
-- **Health check:** http://127.0.0.1:8000/api/health
-
-Keep the terminal open while using the application. Press `Ctrl + C` to stop the server.
-
-## Testing
-
-The project includes basic automated tests for input validation, API health, and URL parsing.
-
-Install the testing dependencies:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install pytest httpx
-```
-
-Run the tests:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-Manual testing can include:
-
-- Submitting a normal email/message.
-- Submitting text with urgency and requests for sensitive information.
-- Entering a constructed suspicious-looking URL.
-- Submitting an empty or malformed input.
-- Checking the application's response when the AI service is unavailable.
-
-These tests do not establish real-world detection accuracy. AI-dependent cases should be tested separately with a working API configuration.
-
-## Limitations
-
-- AI-generated assessments may contain false positives or false negatives.
-- Basic URL indicators cannot establish that a website is safe or malicious.
-- The application does not currently use a labelled dataset to train a separate classifier.
-- Accuracy, precision, recall, and F1-score have not been established through a labelled evaluation dataset.
-- AI analysis requires a working internet connection, valid API access, model availability, and sufficient quota.
-- The application is an educational prototype and is not intended to replace professional security tools.
-
-## Future Improvements
-
-- Train and evaluate a machine-learning classifier using a labelled dataset.
-- Measure precision, recall, F1-score, and confusion matrix results.
-- Integrate reputable URL reputation and threat-intelligence sources.
-- Improve automated testing and input handling.
-- Add authentication, rate limiting, and production security controls.
-- Deploy the application using a suitable hosting platform.
-
-## Academic Project
-
-**Subject:** Machine Learning  
-**Project Title:** Scam Email and Malicious URL Detection Using AI  
-**Project Type:** College academic project
-
-## Disclaimer
-
-This project is intended for educational and cybersecurity-awareness purposes only. Do not submit passwords, one-time passwords (OTPs), confidential emails, or other sensitive information. The application's output is advisory and does not guarantee that a message or URL is safe or malicious.
-
-## Author
-
-**Name:** Pradyum Sanyasi  
-**Course / Department:** COMPUTER SCIENCE & ENGINEERING 
-
-Developed as part of an academic project in Machine Learning.
+- The AI output may be wrong; false positives and false negatives are possible.
+- Basic URL parsing is not domain-reputation analysis and does not prove a URL is safe or malicious.
+- Never paste passwords, OTPs, private data, or confidential messages.
+- Do not automatically open submitted links or download their content.
+- For real deployment, add authentication, rate limiting, HTTPS, privacy-aware logging, and a proper security review.
+- The report describes an AI-service-based system, not a trained ML model. Do not claim accuracy, precision, recall, or F1 scores unless you evaluate against a labelled held-out dataset.

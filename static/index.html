@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ScamShield | Email & URL Analysis</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="mark">S</div>
+      <p class="eyebrow">CYBERSECURITY AWARENESS TOOL</p>
+      <h1>ScamShield</h1>
+      <p class="subtitle">Check suspicious messages and links before you act.</p>
+    </header>
+
+    <section class="panel">
+      <div class="tabs" role="group" aria-label="Choose input type">
+        <button class="tab active" data-type="email" type="button">Email / Message</button>
+        <button class="tab" data-type="url" type="button">Website URL</button>
+      </div>
+
+      <form id="analyze-form">
+        <label id="input-label" for="content">Paste the email or message</label>
+        <textarea id="content" maxlength="10000" required
+          placeholder="Example: Your account will be closed today. Verify your details immediately..."></textarea>
+        <div class="helper"><span id="helper-text">Remove personal details before submitting.</span><span id="counter">0 / 10000</span></div>
+        <button id="submit" class="primary" type="submit">Analyze for risks <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="privacy-note">Do not paste passwords, OTPs, private customer data, or confidential emails.</p>
+    </section>
+
+    <section id="loading" class="panel hidden" aria-live="polite">
+      <div class="spinner"></div><p>Reviewing indicators…</p>
+    </section>
+
+    <section id="result" class="panel hidden" aria-live="polite">
+      <div class="result-head"><div><p class="eyebrow">ANALYSIS REPORT</p><h2>Assessment</h2></div><button id="clear" class="secondary" type="button">Clear</button></div>
+      <div id="url-checks" class="url-checks hidden"></div>
+      <pre id="assessment"></pre>
+      <p id="disclaimer" class="disclaimer"></p>
+    </section>
+
+    <footer>AI-assisted guidance, not a security guarantee. Never open a suspicious link just to test it.</footer>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
